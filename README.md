@@ -1,6 +1,4 @@
 # JSON-Parser
-JSON Parser with two functionalities : 1) JSON Validator  2) JSON Formatter 
-![image](https://github.com/user-attachments/assets/5a344aaf-a409-4aab-bf44-1cbf1fcf98f9)
-
-3) JSON Grid Converter
+JSON Parser with two functionalities: 1) JSON Validator  2) JSON Formatter  3) JSON Grid Converter
+![json_parser_img](https://github.com/user-attachments/assets/73f36c79-f968-4913-b51a-1e0d7e63949a)
 
