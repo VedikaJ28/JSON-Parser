@@ -90,7 +90,51 @@ def json_formatter(json_str):
 
     return formatted_json
 
-
+def json_to_grid(json_str):
+    if not json_validator(json_str):
+        return
+    
+    try:
+        data = json.loads(json_str)
+        
+        if isinstance(data, dict):
+            array_data = None
+            array_key = None
+            top_level_data = {}
+            
+            for key, value in data.items():
+                if isinstance(value, list) and value:
+                    array_data = value
+                    array_key = key
+                else:
+                    top_level_data[key] = value
+            
+            if array_data:
+                df = pd.DataFrame(array_data)
+                for key, value in top_level_data.items():
+                    df[key] = value
+                st.write(f"Grid for '{array_key}':")
+                st.dataframe(df, use_container_width=True)
+            else:
+                df = pd.DataFrame(list(data.items()), columns=["Key", "Value"])
+                st.write("Grid for key-value pairs:")
+                st.dataframe(df, use_container_width=True)
+        
+        elif isinstance(data, list):
+            if data:
+                df = pd.DataFrame(data)
+                st.write("Grid for array:")
+                st.dataframe(df, use_container_width=True)
+            else:
+                st.error("Error: Empty array cannot be converted to grid")
+        
+        else:
+            st.error("Error: JSON must be an object or array for grid display")
+        
+    except json.JSONDecodeError:
+        st.error("Error: Unable to parse JSON for grid display")
+    except Exception as e:
+        st.error(f"Error creating grid: {str(e)}")
 
 st.markdown("""
     <style>
@@ -116,11 +160,11 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.write("Format and Validate JSON !")
+st.write("Format, Validate, and Convert your JSON to Grid easily!")
 
 json_input = st.text_area("Paste your JSON here:", height=200)
 
-col1, col2= st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     if st.button("Format JSON"):
@@ -135,12 +179,16 @@ with col2:
         else:
             st.error("❌ JSON is invalid. Check for errors.")
 
+with col3:
+    if st.button("Convert to Grid"):
+        json_to_grid(json_input)
 
 st.write("📌 **How It Works?**")
 st.markdown("""
 1️⃣ **Paste JSON** into the text area.
 2️⃣ Click **Format** to beautify the JSON.
 3️⃣ Click **Validate** to check for errors.
+4️⃣ Click **Convert to Grid** to see data in grid format.
 """)
 st.write("")
 
